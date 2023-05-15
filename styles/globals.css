@@ -25,3 +25,9 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+@layer components {
+  .section-main {
+    @apply min-h-screen min-w-full flex flex-col items-center justify-center
+  }
+}

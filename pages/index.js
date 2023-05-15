@@ -1,118 +1,200 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import Layout from '@/components/layout';
+import Image from 'next/image';
+import { useState } from 'react';
+import { Dancing_Script } from 'next/font/google';
+import { MuseoModerno } from 'next/font/google';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { IconContext } from 'react-icons';
+import { FaFacebookSquare } from 'react-icons/fa';
 
-const inter = Inter({ subsets: ['latin'] })
+const tltFont = Dancing_Script({ weight: '700', subsets: ['latin'] });
+const bdyFont = MuseoModerno({ weight: '500', subsets: ['latin'] });
 
-export default function Home() {
+export default function Home({ catalog }) {
+
+  const [lrg, setLrg] = useState(false);
+
+  function enlarge(e) {
+    setLrg(true);
+    let img = document.getElementById('largerImage'),
+        src = e.target['data-loaded-src'];
+    img['src']= src;
+  }
+
+  function closeImg() {
+    setLrg(false);
+  }
+
+  function handleKey(e) {
+    let key = e.key;
+    if (key === 'Escape' && lrg) {
+      setLrg(false);
+    }
+  }
+
+  function handleClick(e) {
+    let target = e.target;
+    if (!target.closest('#largerImage') && lrg) {
+      setLrg(false);
+    }
+  }
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <Layout title={'Pa-Ver Óptica'}>
+      <div tabIndex={-1} onKeyDown={handleKey} onClick={handleClick}>
+
+        {/*---- Header ----*/}
+        <div id='top' className='min-w-full min-h-screen flex flex-col items-center justify-center relative'>
+          <Image src={'/paver1.jpg'} fill={true} alt='' className='-z-10 opacity-50 bg-local'/>
+          {/*<div className='bg-fixed min-w-full h-full opacity-50' style={{'backgroundImage': 'url("/paver1.jpg")'}}>*/}
+            <div className='flex flex-col items-center justify-center md:flex-row mt-10'>
+              <Image src="/paver-logo.jpg" width={200} height={200} alt='Logo Pa-Ver' className='rounded-full'/>
+              <div className={`flex flex-col items-center justify-between mx-4 my-2 text-4xl md:text-6xl ${tltFont.className} text-transparent bg-clip-text bg-gradient-to-r from-indigo-900 to-rose-800 text-justify`}>
+                <h1>Óptica Pa-Ver</h1>
+                <h2>Tú Óptica de Confianza</h2>
+              </div>
+            </div>
+            <div className={`mx-10 my-10 md:mx-20 md:my-32 text-2xl md:text-4xl ${bdyFont.className} text-justify`}>
+              <p>Estamos comprometidos a ofrecer anteojos de calidad a bajo precio. Ofrecemos servicio a <a href='#emp' className='text-blue-800 underline decoration-blue-800 underline-offset-4'>empresas</a> y a particulares y contamos con un amplio <a href='#cat' className='text-blue-800 underline decoration-blue-800 underline-offset-4'>catálogo</a> de armazones. <a href='#con' className='text-blue-800 underline decoration-blue-800 underline-offset-4'>Contáctanos</a> y conoce nuestras promociones.</p>
+            </div>
+          {/*</div>*/}
         </div>
+
+        {/*---- Companies ----*/}
+        <div id='emp' className={`min-w-full min-h-screen flex flex-col items-center justify-center relative ${bdyFont.className}`}>
+          <Image src={'/paver2.jpg'} fill={true} alt='' className='-z-10 opacity-50' />
+          <h3 className='text-4xl mt-10'>Atención a Empresas</h3>
+          <p className='ml-12 mt-20 text-2xl'>Ofrecemos servicio a empresas dentro de sus propias instalaciones y al mejor precio.</p>
+          <p className='ml-12 mt-10 text-2xl'>Contamos con más de 10 años de experiencia brindando la atención que nos caracteriza.</p> 
+          <p className='ml-12 mt-10 text-2xl'><a href='#con'>Contáctanos</a> para conocer nuestros planes y agendar tu cita.</p>
+          <p className='ml-6 mt-20 text-lg'>Algunas de las empresas que atendemos:</p>
+          <div className='flex mx-8 w-11/12 justify-evenly my-10 bg-zinc-300 opacity-70'>
+            <Image src={'/logo-emp.png'} height={100} width={100} alt='Logo Empresa 1' />
+            <Image src={'/logo-emp.png'} height={100} width={100} alt='Logo Empresa 2' />
+            <Image src={'/logo-emp.png'} height={100} width={100} alt='Logo Empresa 3' />
+          </div>
+        </div>
+
+        {/*---- Catalog ----*/}
+        <div id='cat' className={`min-w-full min-h-screen flex flex-col ${bdyFont.className} items-center justify-center bg-gradient-to-bl from-pink-500 to-yellow-500`}>
+          <h3 className='text-4xl mt-10'>Nuestro Catálogo</h3>
+          {console.log('the catalog inside the component ----->', catalog)}
+          {Object.keys(catalog).forEach(key => {
+            //console.log('oiiii --->', key);
+            return (
+              <div className='flex flex-col'>
+                <p className='ml-12 mt-12'>`${key}`</p>
+                <div className='flex justify-center items-center flex-wrap'>
+                  {catalog[key].forEach(item => {
+                    //console.log('uiiiii --->', item);
+                    return (
+                      <Image src={`/${key}/${item}`} width={150} height={150} alt={`${item}`} onClick={enlarge} className='cursor-zoom-in m-4' />
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
+          <p>{catalog.Marca1[0]}</p>
+          {/*<div className='flex flex-col'>
+            <p className='ml-12 mt-12'>Marca 1</p>
+            <div className='flex justify-center items-center flex-wrap'>
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 1' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 2' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 3' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 4' onClick={enlarge} className='cursor-zoom-in m-4' />
+            </div>
+          </div>
+
+          <div className='flex flex-col'>
+            <p className='ml-12 mt-12'>Marca 2</p>
+            <div className='flex justify-center items-center flex-wrap'>
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 1' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 2' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 3' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 4' onClick={enlarge} className='cursor-zoom-in m-4' />
+            </div>
+          </div>
+
+          <div className='flex flex-col'>
+            <p className='ml-12 mt-12'>Marca 3</p>
+            <div className='flex justify-center items-center flex-wrap'>
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 1' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 2' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 3' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 4' onClick={enlarge} className='cursor-zoom-in m-4' />
+            </div>
+          </div>
+
+          <div className='flex flex-col mb-10'>
+            <p className='ml-12 mt-12'>Marca 4</p>
+            <div className='flex justify-center items-center flex-wrap'>
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 1' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 2' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 3' onClick={enlarge} className='cursor-zoom-in m-4' />
+              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 4' onClick={enlarge} className='cursor-zoom-in m-4' />
+            </div>
+          </div>*/}
+
+        </div>
+
+        {/*---- Contact ----*/}
+        <div id='con' className={`min-w-full flex flex-col justify-center items-center ${bdyFont.className} bg-fuchsia-500`}>
+          <h3 className='text-4xl mt-24'>Contáctanos</h3>
+          <div className='flex w-11/12 mx-8 justify-evenly my-12 space-x-4'>
+            <div className='flex flex-col'>
+              <h4 className='mb-4'>Estamos ubicados en:</h4>
+              <p>P. Sta. Elena 1357</p>
+              <p>Paseo de Santa Fe, Juárez, N.L.</p>
+              <p>C.P. 67260</p>
+            </div>
+            <div className='flex flex-col'>
+              <h4 className='mb-4'>¡También vamós a tú domicilio!</h4>
+              <p>Agenda tu cita en:</p>
+              <p>Tel: 81 2878 5491</p>
+            </div>
+            <div className='flex flex-col mb-24'>
+              <h4 className='mb-4'>Visita Nuestras Redes Sociales:</h4>
+              <div className='flex space-x-4'>
+                <a href='https://m.facebook.com/people/%C3%93ptica-paver/100063131566979/' target='_blank'>
+                  <IconContext.Provider value={{size: '32px'}}>
+                    <FaFacebookSquare className='fill-blue-500'/>
+                  </IconContext.Provider>
+                </a>
+                <a href='https://instagram.com' target='_blank'>
+                  <Image src={'/instagram.svg'} width={32} height={32} alt='' />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/*---- Large Image ----*/}
+        <div className={`${lrg ? 'flex' : 'hidden'} w-screen h-screen fixed justify-center items-center top-0 left-0`} >
+          <div className='w-full h-full md:w-9/12 md:h-5/6 bg-white flex flex-col rounded-md ring-2 ring-blue-500'>
+            <div className='w-full h-8 flex items-center justify-end pr-4 opacity-50 rounded-md border-b-2'>
+              <IconContext.Provider value={{size: '1.5em'}}>
+                <AiOutlineCloseCircle className=' fill-red-500 hover:fill-cyan-400' onClick={closeImg}/>
+              </IconContext.Provider>
+            </div>
+            <div className='relative w-full h-full rounded-md'>
+              <Image id='largerImage' fill={true} alt='Imagen agrandada' src={''} />
+            </div>
+          </div>
+        </div>
+
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </Layout>
   )
+}
+
+export async function getStaticProps() {
+  const res = await fetch('http://localhost:3000/api/catalog');
+  const catalog = await res.json();
+  
+  return {
+    props: {
+      catalog,
+    },
+  };
 }
