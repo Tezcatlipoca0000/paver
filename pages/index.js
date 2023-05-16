@@ -13,6 +13,19 @@ const bdyFont = MuseoModerno({ weight: '500', subsets: ['latin'] });
 export default function Home({ catalog }) {
 
   const [lrg, setLrg] = useState(false);
+  const renderedProps = Object.keys(catalog).map((key) => {
+    const items = catalog[key];
+    return (
+    <div key={key} className='flex flex-col'>
+      <p key={key} className='ml-12 mt-12'>{key}</p>
+      <div key={key} className='flex justify-center items-center flex-wrap'>
+        {items.map((item) => (
+          <Image key={key} src={`/${key}/${item}`} width={150} height={150} alt={`${item}`} onClick={enlarge} className='cursor-zoom-in m-4' />
+        ))}
+      </div>
+    </div>
+    );
+  });
 
   function enlarge(e) {
     setLrg(true);
@@ -78,64 +91,7 @@ export default function Home({ catalog }) {
         {/*---- Catalog ----*/}
         <div id='cat' className={`min-w-full min-h-screen flex flex-col ${bdyFont.className} items-center justify-center bg-gradient-to-bl from-pink-500 to-yellow-500`}>
           <h3 className='text-4xl mt-10'>Nuestro Catálogo</h3>
-          {console.log('the catalog inside the component ----->', catalog)}
-          {Object.keys(catalog).forEach(key => {
-            //console.log('oiiii --->', key);
-            return (
-              <div className='flex flex-col'>
-                <p className='ml-12 mt-12'>`${key}`</p>
-                <div className='flex justify-center items-center flex-wrap'>
-                  {catalog[key].forEach(item => {
-                    //console.log('uiiiii --->', item);
-                    return (
-                      <Image src={`/${key}/${item}`} width={150} height={150} alt={`${item}`} onClick={enlarge} className='cursor-zoom-in m-4' />
-                    )
-                  })}
-                </div>
-              </div>
-            )
-          })}
-          <p>{catalog.Marca1[0]}</p>
-          {/*<div className='flex flex-col'>
-            <p className='ml-12 mt-12'>Marca 1</p>
-            <div className='flex justify-center items-center flex-wrap'>
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 1' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 2' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 3' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 4' onClick={enlarge} className='cursor-zoom-in m-4' />
-            </div>
-          </div>
-
-          <div className='flex flex-col'>
-            <p className='ml-12 mt-12'>Marca 2</p>
-            <div className='flex justify-center items-center flex-wrap'>
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 1' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 2' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 3' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 4' onClick={enlarge} className='cursor-zoom-in m-4' />
-            </div>
-          </div>
-
-          <div className='flex flex-col'>
-            <p className='ml-12 mt-12'>Marca 3</p>
-            <div className='flex justify-center items-center flex-wrap'>
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 1' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 2' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 3' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 4' onClick={enlarge} className='cursor-zoom-in m-4' />
-            </div>
-          </div>
-
-          <div className='flex flex-col mb-10'>
-            <p className='ml-12 mt-12'>Marca 4</p>
-            <div className='flex justify-center items-center flex-wrap'>
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 1' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 2' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 3' onClick={enlarge} className='cursor-zoom-in m-4' />
-              <Image src={'/gafas.png'} width={150} height={150} alt='Gafas 4' onClick={enlarge} className='cursor-zoom-in m-4' />
-            </div>
-          </div>*/}
-
+          {renderedProps}
         </div>
 
         {/*---- Contact ----*/}
