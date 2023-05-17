@@ -4,8 +4,8 @@
 
 Sitio desarrollado por:
 
-    > Tezcatlipoca0000
+Tezcatlipoca0000
 
-    > [Github/Tezcatlipoca0000](https://github.com/Tezcatlipoca0000)
-    
-    > Correo Electrónico: tezcatlipoca0000@gmail.com
+[Github/Tezcatlipoca0000](https://github.com/Tezcatlipoca0000)
+
+Correo Electrónico: tezcatlipoca0000@gmail.com
