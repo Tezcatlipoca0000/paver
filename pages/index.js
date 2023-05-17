@@ -21,7 +21,7 @@ export default function Home({ catalog }) {
       <p key={key} className='ml-12 mt-12'>{key}</p>
       <div key={key} className='flex justify-center items-center flex-wrap'>
         {items.map((item) => (
-          <Image key={key} src={`/${key}/${item}`} width={150} height={150} alt={`${item}`} onClick={enlarge} className='cursor-zoom-in m-4' />
+          <Image key={key} src={`/${key}/${item}`} width={150} height={150} alt={item} onClick={enlarge} className='cursor-zoom-in m-4' />
         ))}
       </div>
     </div>
@@ -60,7 +60,6 @@ export default function Home({ catalog }) {
         {/*---- Header ----*/}
         <div id='top' className='min-w-full min-h-screen flex flex-col items-center justify-center relative'>
           <Image src={'/paver1.jpg'} fill={true} alt='' className='-z-10 opacity-50 bg-local'/>
-          {/*<div className='bg-fixed min-w-full h-full opacity-50' style={{'backgroundImage': 'url("/paver1.jpg")'}}>*/}
             <div className='flex flex-col items-center justify-center md:flex-row mt-10'>
               <Image src="/paver-logo.jpg" width={200} height={200} alt='Logo Pa-Ver' className='rounded-full'/>
               <div className={`flex flex-col items-center justify-between mx-4 my-2 text-4xl md:text-6xl ${tltFont.className} text-transparent bg-clip-text bg-gradient-to-r from-indigo-900 to-rose-800 text-justify`}>
@@ -71,7 +70,6 @@ export default function Home({ catalog }) {
             <div className={`mx-10 my-10 md:mx-20 md:my-32 text-2xl md:text-4xl ${bdyFont.className} text-justify`}>
               <p>Estamos comprometidos a ofrecer anteojos de calidad a bajo precio. Ofrecemos servicio a <a href='#emp' className='text-blue-800 underline decoration-blue-800 underline-offset-4'>empresas</a> y a particulares y contamos con un amplio <a href='#cat' className='text-blue-800 underline decoration-blue-800 underline-offset-4'>catálogo</a> de armazones. <a href='#con' className='text-blue-800 underline decoration-blue-800 underline-offset-4'>Contáctanos</a> y conoce nuestras promociones.</p>
             </div>
-          {/*</div>*/}
         </div>
 
         {/*---- Companies ----*/}
@@ -145,10 +143,8 @@ export default function Home({ catalog }) {
   )
 }
 
-export async function getStaticProps() {
-  //const res = await fetch('http://localhost:3000/api/catalog');
-  //const catalog = await res.json();
-  const catalog = await getCatalog()
+export function getStaticProps() {
+  const catalog = getCatalog()
   
   return {
     props: {
