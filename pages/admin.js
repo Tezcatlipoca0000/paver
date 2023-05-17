@@ -1,12 +1,10 @@
 import Layout from "@/components/layout";
 import Link from "next/link";
-//import useUser from "@/lib/useUser";
 import Router from "next/router";
 import { useState } from "react";
 
 export default function admin() {
 
-    //const { user } = useUser();
     const [error, setError] = useState(false);
 
     async function handleSubmit(e) {
