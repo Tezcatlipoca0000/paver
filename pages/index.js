@@ -6,6 +6,7 @@ import { MuseoModerno } from 'next/font/google';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IconContext } from 'react-icons';
 import { FaFacebookSquare } from 'react-icons/fa';
+import getCatalog from '@/lib/getCatalog';
 
 const tltFont = Dancing_Script({ weight: '700', subsets: ['latin'] });
 const bdyFont = MuseoModerno({ weight: '500', subsets: ['latin'] });
@@ -13,7 +14,7 @@ const bdyFont = MuseoModerno({ weight: '500', subsets: ['latin'] });
 export default function Home({ catalog }) {
 
   const [lrg, setLrg] = useState(false);
-  const renderedProps = Object.keys(catalog).map((key) => {
+  const renderedCatalog = Object.keys(catalog).map((key) => {
     const items = catalog[key];
     return (
     <div key={key} className='flex flex-col'>
@@ -91,7 +92,7 @@ export default function Home({ catalog }) {
         {/*---- Catalog ----*/}
         <div id='cat' className={`min-w-full min-h-screen flex flex-col ${bdyFont.className} items-center justify-center bg-gradient-to-bl from-pink-500 to-yellow-500`}>
           <h3 className='text-4xl mt-10'>Nuestro Catálogo</h3>
-          {renderedProps}
+          {renderedCatalog}
         </div>
 
         {/*---- Contact ----*/}
@@ -145,8 +146,9 @@ export default function Home({ catalog }) {
 }
 
 export async function getStaticProps() {
-  const res = await fetch('http://localhost:3000/api/catalog');
-  const catalog = await res.json();
+  //const res = await fetch('http://localhost:3000/api/catalog');
+  //const catalog = await res.json();
+  const catalog = await getCatalog()
   
   return {
     props: {
