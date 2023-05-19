@@ -17,11 +17,11 @@ export default function Home({ catalog }) {
   const renderedCatalog = Object.keys(catalog).map((key) => {
     const items = catalog[key];
     return (
-    <div key={key} className='flex flex-col'>
-      <p key={key} className='ml-12 mt-12'>{key}</p>
-      <div key={key} className='flex justify-center items-center flex-wrap'>
+    <div key={`cont-${key}`} className='flex flex-col'>
+      <p key={`p-${key}`} className='ml-12 mt-12'>{key}</p>
+      <div key={`rect-${key}`} className='flex justify-center items-center flex-wrap'>
         {items.map((item) => (
-          <Image key={key} src={`/${key}/${item}`} width={150} height={150} alt={item} onClick={enlarge} className='cursor-zoom-in m-4' />
+          <Image key={`img-${item}`} src={`/${key}/${item}`} width={150} height={150} alt={item} onClick={enlarge} className='cursor-zoom-in m-4' />
         ))}
       </div>
     </div>
