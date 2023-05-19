@@ -6,13 +6,13 @@ export default function handler(req,res) {
     let error = false;
 
     
-    fs.rm(folder, { recursive: true, force: true }, async (err) => {
+    fs.rm(folder, { recursive: true, force: true }, (err) => {
         if (err) {
             console.log('error deleting directory ----> ', err);
             error = true;
             return res.status(200).json({error: error});
         } else {
-            await res.revalidate('/edit')
+            //await res.revalidate('/edit')
             return res.status(200).json({error: error});
         }
         });

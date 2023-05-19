@@ -4,7 +4,7 @@ import { useState } from "react";
 import Layout from "@/components/layout";
 import Image from "next/image";
 import getCatalog from '@/lib/getCatalog';
-//import removeBrand from "@/lib/removeBrand";
+
 
 export default function edit({ catalog }) {
 
@@ -13,31 +13,65 @@ export default function edit({ catalog }) {
 
     async function postBrand(e) {
         e.preventDefault();
-
-        const body = {
-            brand: e.currentTarget.newBrand.value,
-            file: e.currentTarget.newFile.value
-        };
-
-        console.log('the body ---->', body);
-        console.log('the event --->', e);
+        const files = e.target.elements.newFile.files;
+        let formData = new FormData();
+        formData.append('brand', e.currentTarget.newBrand.value);
+        for (let i = 0; i < files.length; i++) {
+            formData.append(`image${i}`, files[i]);
+        }
+        const response = await fetch('/api/postBrand', {
+            method: 'POST',
+            body: formData
+        });
+        let data;
+        try {
+            data = await response.json();
+        } catch(err) {
+            data = {error: true}
+        }
+        if (data.error) {
+            alert('Ocurrió un error al guardar la nueva marca. Por favor vuelva a intentarlo.');
+        } else {
+            alert('¡Marca creada con éxito!');
+            router.push({pathname: '/edit', query: {access: true}}, '/edit');
+        }
     }
 
     async function postModel(e) {
         e.preventDefault();
+        const brand = e.currentTarget.brandOpt.value
+        const files = e.target.elements.newModel.files;
+        let formData = new FormData();
+        formData.append('brand', brand);
+        for (let i = 0; i < files.length; i++) {
+            formData.append(`image${i}`, files[i]);
+        }
+        const response = await fetch('/api/postModel', {
+            method: 'POST',
+            body: formData
+        });
+        let data;
+        try {
+            data = await response.json();
+        } catch(err) {
+            data = {error: true}
+        }
+        if (data.error) {
+            alert('Ocurrió un error al guardar el nuevo modelo. Por favor vuelva a intentarlo.');
+        } else {
+            alert('¡Modelo(s) creado(s) con éxito!');
+            router.push({pathname: '/edit', query: {access: true}}, '/edit');
+        }
     }
 
     async function erraseBrand(e) {
         let brand = e.target.value;
-
         const response = await fetch('/api/removeBrand', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({errase: `${brand}`}),
         });
-
         const data = await response.json();
-
         if (data.error) {
             alert('Ocurrió un error al borrar la marca. Por favor vuelva a intentarlo.');
         } else {
@@ -47,26 +81,21 @@ export default function edit({ catalog }) {
     }
 
     async function erraseModel(e) {
-
-        let value = e.target.value.split('-');
+        let value = e.target.value.split('--');
         let brand = value[0],
             model = value[1];
-
         const response = await fetch('/api/removeModel', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({brand: `${brand}`, model: `${model}`}),
         });
-
         const data = await response.json();
-
         if (data.error) {
             alert('Ocurrió un error al borrar el modelo. Por favor vuelva a intentarlo.');
         } else {
             alert('Modelo borrada exitósamente!');
             router.push({pathname: '/edit', query: {access: true}}, '/edit');
         }
-
     }
 
     const renderedCatalog = Object.keys(catalog).map((key) => {
@@ -84,7 +113,7 @@ export default function edit({ catalog }) {
                 <div key={`rect-${item}`} className="flex justify-center items-center bg-slate-300 m-4 p-4">
                     <Image key={`img-${item}`} src={`/${key}/${item}`} width={150} height={150} alt={item} className='m-4' />
                     <div key={`rect2-${item}`}>
-                        <button value={`${key}-${item}`} className="bg-white hover:bg-red-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={erraseModel}>
+                        <button value={`${key}--${item}`} className="bg-white hover:bg-red-300 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={erraseModel}>
                             Borrar Modelo
                         </button>
                     </div>
@@ -158,7 +187,7 @@ export default function edit({ catalog }) {
                                     <label htmlFor="newFile" className="block text-sm font-medium text-gray-900 dark:text-white">
                                         Archivos de Imagen:
                                     </label>
-                                    <input id="newFile" name="newFile" type="file" required className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 mb-6"/>
+                                    <input id="newFile" name="newFile" type="file" multiple required className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 mb-6"/>
                                     <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                         Cargar Imagen
                                     </button>
@@ -181,7 +210,7 @@ export default function edit({ catalog }) {
                                     <label htmlFor="newModel" className="block text-sm font-medium text-gray-900 dark:text-white">
                                         Archivos de Imagen:
                                     </label>
-                                    <input id="newModel" name="newModel" type="file" required className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 mb-6"/>
+                                    <input id="newModel" name="newModel" type="file" multiple required className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 mb-6"/>
                                     <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                         Cargar Imagen
                                     </button>
@@ -197,7 +226,6 @@ export default function edit({ catalog }) {
     }
 
 }
-
 
 export function getStaticProps() {
     const catalog = getCatalog()
