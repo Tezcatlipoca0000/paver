@@ -15,20 +15,24 @@ export default function admin() {
             pass: e.currentTarget.password.value
         };
 
-        const response = await fetch('/api/user', {
+        const response = await fetch('/api/login', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(body)
         });
 
-        const data = await response.json();
+        if (response.ok) {
+            return Router.push('/edit')
+        }
+
+        /*const data = await response.json();
         
         if (data.status === true) {
             setError(false);
             Router.push({pathname: '/edit', query: {access: data.status}}, '/edit');
         } else {
             setError(true);
-        }
+        }*/
     }
     
     return (

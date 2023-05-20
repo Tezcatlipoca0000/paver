@@ -8,6 +8,10 @@ import { IconContext } from 'react-icons';
 import { FaFacebookSquare } from 'react-icons/fa';
 import getCatalog from '@/lib/getCatalog';
 
+// TODO: a proper authentication
+// TODO: Incremental Static Regeneration https://nextjs.org/docs/pages/building-your-application/rendering/incremental-static-regeneration
+// MAYBE: add model name to each image caption
+
 const tltFont = Dancing_Script({ weight: '700', subsets: ['latin'] });
 const bdyFont = MuseoModerno({ weight: '500', subsets: ['latin'] });
 
@@ -17,13 +21,14 @@ export default function Home({ catalog }) {
   const renderedCatalog = Object.keys(catalog).map((key) => {
     const items = catalog[key];
     return (
-    <div key={`cont-${key}`} className='flex flex-col'>
-      <p key={`p-${key}`} className='ml-12 mt-12'>{key}</p>
-      <div key={`rect-${key}`} className='flex justify-center items-center flex-wrap'>
+    <div key={`cont-${key}`} className='w-full flex flex-col'>
+      <p key={`p-${key}`} className='text-3xl italic ml-12 mt-12'>{key}</p>
+      <div key={`rect-${key}`} className='place-self-center flex justify-center items-center flex-wrap'>
         {items.map((item) => (
           <Image key={`img-${item}`} src={`/${key}/${item}`} width={150} height={150} alt={item} onClick={enlarge} className='cursor-zoom-in m-4' />
         ))}
       </div>
+      <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
     </div>
     );
   });
@@ -91,6 +96,7 @@ export default function Home({ catalog }) {
         <div id='cat' className={`min-w-full min-h-screen flex flex-col ${bdyFont.className} items-center justify-center bg-gradient-to-bl from-pink-500 to-yellow-500`}>
           <h3 className='text-4xl mt-10'>Nuestro Catálogo</h3>
           {renderedCatalog}
+          <div className='block mb-12'></div>
         </div>
 
         {/*---- Contact ----*/}

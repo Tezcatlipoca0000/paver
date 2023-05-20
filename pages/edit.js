@@ -1,18 +1,17 @@
-import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import Layout from "@/components/layout";
 import Image from "next/image";
 import getCatalog from '@/lib/getCatalog';
+import { withSessionSsr } from "@/lib/withSession";
 
 
-export default function edit({ catalog }) {
+export default function edit({ catalog, user }) {
 
     const router = useRouter();
-    const [access, setAccess] = useState(false);
 
     async function postBrand(e) {
         e.preventDefault();
+        
         const files = e.target.elements.newFile.files;
         let formData = new FormData();
         formData.append('brand', e.currentTarget.newBrand.value);
@@ -33,7 +32,7 @@ export default function edit({ catalog }) {
             alert('Ocurrió un error al guardar la nueva marca. Por favor vuelva a intentarlo.');
         } else {
             alert('¡Marca creada con éxito!');
-            router.push({pathname: '/edit', query: {access: true}}, '/edit');
+            router.push('/edit');
         }
     }
 
@@ -60,7 +59,7 @@ export default function edit({ catalog }) {
             alert('Ocurrió un error al guardar el nuevo modelo. Por favor vuelva a intentarlo.');
         } else {
             alert('¡Modelo(s) creado(s) con éxito!');
-            router.push({pathname: '/edit', query: {access: true}}, '/edit');
+            router.push('/edit');
         }
     }
 
@@ -76,7 +75,7 @@ export default function edit({ catalog }) {
             alert('Ocurrió un error al borrar la marca. Por favor vuelva a intentarlo.');
         } else {
             alert('¡Marca borrada exitósamente!');
-            router.push({pathname: '/edit', query: {access: true}}, '/edit');
+            router.push('/edit');
         }
     }
 
@@ -94,7 +93,7 @@ export default function edit({ catalog }) {
             alert('Ocurrió un error al borrar el modelo. Por favor vuelva a intentarlo.');
         } else {
             alert('Modelo borrada exitósamente!');
-            router.push({pathname: '/edit', query: {access: true}}, '/edit');
+            router.push('/edit');
         }
     }
 
@@ -129,110 +128,119 @@ export default function edit({ catalog }) {
         <option key={key} value={key}>{key}</option>
     ));
 
-    useEffect(()=>{
-        const login = router.query.access;
-        if (!login) {
-            setAccess(false);
+    async function handleLogout() {
+        const response = await fetch('/api/logout')
+        
+        if (response.ok) {
             router.push('/');
         } else {
-            setAccess(true);
+            alert('Hubo un error al salir. Por favor vuelva a intentarlo.');
         }
-    }, [router.query]);
-
-    if (!access) {
-        return (
-            <Layout title={'Acceso Denegado'}>
-                <div className="h-screen w-screen flex justify-center items-center">
-                    <h1 className="m-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">¡Acceso No Permitido!</h1>
-                </div>
-            </Layout>
-        )
-    } else {
-        return (
-            <Layout title={'Administrar Pa-Ver'}>
-                <div className="flex flex-col justify-center items-center">
-    
-                    <h1 className="m-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-                        Interfaz para la Edición del Catálogo
-                    </h1>
-    
-                    {/*---FIRST SECTION*/}
-                    <div className="w-full">
-                        <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
-                        <h2 className="text-4xl font-bold dark:text-white m-4">
-                            Para Borrar:
-                        </h2>
-                        <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
-                        {renderedCatalog}
-                    </div>
-    
-                    {/*---SECOND SECTION*/}
-                    <div className="w-full">
-                        <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
-                        <h2 className="text-4xl font-bold dark:text-white m-4">
-                            Para Agregar:
-                        </h2>
-                        <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
-                        <div className="w-full flex flex-col justify-center items-center">
-                            
-                            <div className="w-full flex justify-evenly">
-                                <form onSubmit={postBrand} className=" p-6 border border-slate-400 rounded-lg">
-                                    <h3 className="text-3xl font-bold dark:text-white mb-6">
-                                        Nueva Marca:
-                                    </h3>
-                                    <label htmlFor="newBrand" className="block text-sm font-medium text-gray-900 dark:text-white">
-                                        Escriba el Nombre de la Marca:
-                                    </label>
-                                    <input id="newBrand" name="newBrand" type="text" placeholder="Nombre de la Marca" required className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-6"/>
-                                    <label htmlFor="newFile" className="block text-sm font-medium text-gray-900 dark:text-white">
-                                        Archivos de Imagen:
-                                    </label>
-                                    <input id="newFile" name="newFile" type="file" multiple required className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 mb-6"/>
-                                    <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        Cargar Imagen
-                                    </button>
-                                </form>
-                                <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
-                                
-                                <form onSubmit={postModel} className=" p-6 border border-slate-400 rounded-lg">
-                                    <h3 className="text-3xl font-bold dark:text-white mb-6">
-                                        Nuevo Modelo:
-                                    </h3>
-                                    <label htmlFor="brandOpt" className="block text-sm font-medium text-gray-900 dark:text-white">
-                                        Seleccione el Nombre de la Marca:
-                                    </label>
-                                    <select id="brandOpt" name="brandOpt" required className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-6">
-                                        <option value=''>
-                                            --Elije una opción--
-                                        </option>
-                                        {brandOptions}
-                                    </select>
-                                    <label htmlFor="newModel" className="block text-sm font-medium text-gray-900 dark:text-white">
-                                        Archivos de Imagen:
-                                    </label>
-                                    <input id="newModel" name="newModel" type="file" multiple required className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 mb-6"/>
-                                    <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        Cargar Imagen
-                                    </button>
-                                </form>
-                            </div>
-                            <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
-                        </div>
-                    </div>
-    
-                </div>
-            </Layout>
-        )
     }
 
+    const logoutBanner = 
+        (
+            <div className="h-24 w-full my-6 border flex justify-end items-center">
+                <button className="text-2xl text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mr-6" onClick={handleLogout}>Salir</button>
+            </div>
+        );
+    
+
+    return (
+        <Layout title={'Administrar Pa-Ver'}>
+            <div className="flex flex-col justify-center items-center">
+                {logoutBanner}
+    
+                <h1 className="m-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+                        Interfaz para la Edición del Catálogo
+                </h1>
+    
+                {/*---FIRST SECTION*/}
+                <div className="w-full">
+                    <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
+                    <h2 className="text-4xl font-bold dark:text-white m-4">
+                        Para Borrar:
+                    </h2>
+                    <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
+                    {renderedCatalog}
+                </div>
+    
+                {/*---SECOND SECTION*/}
+                <div className="w-full">
+                    <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
+                    <h2 className="text-4xl font-bold dark:text-white m-4">
+                        Para Agregar:
+                    </h2>
+                    <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
+                    <div className="w-full flex flex-col justify-center items-center">
+                            
+                        <div className="w-full flex justify-evenly">
+                            <form onSubmit={postBrand} className=" p-6 border border-slate-400 rounded-lg">
+                                <h3 className="text-3xl font-bold dark:text-white mb-6">
+                                    Nueva Marca:
+                                </h3>
+                                <label htmlFor="newBrand" className="block text-sm font-medium text-gray-900 dark:text-white">
+                                    Escriba el Nombre de la Marca:
+                                </label>
+                                <input id="newBrand" name="newBrand" type="text" placeholder="Nombre de la Marca" required className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-6"/>
+                                <label htmlFor="newFile" className="block text-sm font-medium text-gray-900 dark:text-white">
+                                    Archivos de Imagen:
+                                </label>
+                                <input id="newFile" name="newFile" type="file" multiple required className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 mb-6"/>
+                                <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    Cargar Imagen
+                                </button>
+                            </form>
+                            <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
+                                
+                            <form onSubmit={postModel} className=" p-6 border border-slate-400 rounded-lg">
+                                <h3 className="text-3xl font-bold dark:text-white mb-6">
+                                    Nuevo Modelo:
+                                </h3>
+                                <label htmlFor="brandOpt" className="block text-sm font-medium text-gray-900 dark:text-white">
+                                    Seleccione el Nombre de la Marca:
+                                </label>
+                                <select id="brandOpt" name="brandOpt" required className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-6">
+                                    <option value=''>
+                                        --Elije una opción--
+                                    </option>
+                                    {brandOptions}
+                                </select>
+                                <label htmlFor="newModel" className="block text-sm font-medium text-gray-900 dark:text-white">
+                                    Archivos de Imagen:
+                                </label>
+                                <input id="newModel" name="newModel" type="file" multiple required className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 mb-6"/>
+                                <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    Cargar Imagen
+                                </button>
+                            </form>
+                        </div>
+                        <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
+                    </div>
+                </div>
+
+                {logoutBanner}
+    
+            </div>
+        </Layout>
+    )
 }
 
-export function getStaticProps() {
-    const catalog = getCatalog()
+
+export const getServerSideProps = withSessionSsr(
+    async ({req, res}) => {
+        const catalog = getCatalog()
+        const user = req.session.user;
+
+        if(!user) {
+            return {
+                notFound: true,
+            }
+        }
+
+        return {
+            props: { catalog, user }
+        }
+    });
     
-    return {
-      props: {
-        catalog,
-      },
-    };
-  }
+  
