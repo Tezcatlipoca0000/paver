@@ -8,7 +8,6 @@ import { IconContext } from 'react-icons';
 import { FaFacebookSquare } from 'react-icons/fa';
 import getCatalog from '@/lib/getCatalog';
 
-// TODO: a proper authentication
 // TODO: Incremental Static Regeneration https://nextjs.org/docs/pages/building-your-application/rendering/incremental-static-regeneration
 // MAYBE: add model name to each image caption
 
@@ -156,5 +155,6 @@ export function getStaticProps() {
     props: {
       catalog,
     },
+    revalidate: 10,
   };
 }
