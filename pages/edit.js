@@ -8,7 +8,9 @@ export default function edit({ catalog, user }) {
 
     const router = useRouter();
 
+    /* Handles posting a new brand and images to the file system */
     async function postBrand(e) {
+        // TODO: parse newBrand value (replace whitespace for symbol)
         e.preventDefault();
         const files = e.target.elements.newFile.files;
         let formData = new FormData();
@@ -30,10 +32,12 @@ export default function edit({ catalog, user }) {
             alert('Ocurrió un error al guardar la nueva marca. Por favor vuelva a intentarlo.');
         } else {
             alert('¡Marca creada con éxito!');
+            await fetch('/api/revalidate');
             router.push('/edit');
         }
     }
 
+    /* Handles posting new images to an existing brand in the file system */
     async function postModel(e) {
         e.preventDefault();
         const brand = e.currentTarget.brandOpt.value
@@ -57,10 +61,12 @@ export default function edit({ catalog, user }) {
             alert('Ocurrió un error al guardar el nuevo modelo. Por favor vuelva a intentarlo.');
         } else {
             alert('¡Modelo(s) creado(s) con éxito!');
+            await fetch('/api/revalidate');
             router.push('/edit');
         }
     }
 
+    /* Handles errasing a brand and images associated from the file system */
     async function erraseBrand(e) {
         let brand = e.target.value;
         const response = await fetch('/api/removeBrand', {
@@ -73,10 +79,12 @@ export default function edit({ catalog, user }) {
             alert('Ocurrió un error al borrar la marca. Por favor vuelva a intentarlo.');
         } else {
             alert('¡Marca borrada exitósamente!');
+            await fetch('/api/revalidate');
             router.push('/edit');
         }
     }
 
+    /* Handles errasing images of a specific brand from the file system */
     async function erraseModel(e) {
         let value = e.target.value.split('--');
         let brand = value[0],
@@ -91,12 +99,14 @@ export default function edit({ catalog, user }) {
             alert('Ocurrió un error al borrar el modelo. Por favor vuelva a intentarlo.');
         } else {
             alert('Modelo borrada exitósamente!');
-            const reval = await fetch('/api/revalidate');
+            await fetch('/api/revalidate');
             router.push('/edit');
         }
     }
 
+    /* The catalog of images */
     const renderedCatalog = Object.keys(catalog).map((key) => {
+        // TODO: parse key (replace symbol with whitespace)
         const items = catalog[key];
         return (
         <div key={`cont-${key}`} className='flex flex-col'>
@@ -123,12 +133,14 @@ export default function edit({ catalog, user }) {
         );
     });
 
+    /* the catalog keys */
     const brandOptions = Object.keys(catalog).map((key) => (
         <option key={key} value={key}>{key}</option>
     ));
 
+    /* Handles iron-session logout */
     async function handleLogout() {
-        const response = await fetch('/api/logout')
+        const response = await fetch('/api/logout');
         if (response.ok) {
             router.push('/');
         } else {
@@ -136,20 +148,22 @@ export default function edit({ catalog, user }) {
         }
     }
 
+    /* Renders the logout banner */
     const logoutBanner = 
         (
-            <div className="h-24 w-full my-6 border flex justify-end items-center">
-                <button className="text-2xl text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mr-6" onClick={handleLogout}>
-                    Salir
+            <div>
+                <button className="text-2xl text-white bg-red-400 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-6" onClick={handleLogout}>
+                    &#60;--Salir
                 </button>
             </div>
         );
     
-
     return (
         <Layout title={'Administrar Pa-Ver'}>
             <div className="flex flex-col justify-center items-center">
-                {logoutBanner}
+                <div className="h-24 w-full my-6 border flex flex-row justify-end items-center">
+                    {logoutBanner}
+                </div>
                 <h1 className="m-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
                         Interfaz para la Edición del Catálogo
                 </h1>
@@ -213,13 +227,15 @@ export default function edit({ catalog, user }) {
                         <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
                     </div>
                 </div>
-                {logoutBanner}
+                <div className="h-24 w-full my-6 border flex flex-row-reverse justify-end items-center">
+                    {logoutBanner}
+                </div>
             </div>
         </Layout>
     )
 }
 
-
+/* Handles iron-session verification and imports the catalog of images */
 export const getServerSideProps = withSessionSsr(
     async ({req, res}) => {
         const catalog = getCatalog()
@@ -233,5 +249,3 @@ export const getServerSideProps = withSessionSsr(
             props: { catalog, user }
         }
     });
-    
-  

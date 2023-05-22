@@ -1,38 +1,26 @@
 import Layout from "@/components/layout";
 import Link from "next/link";
 import Router from "next/router";
-import { useState } from "react";
 
 export default function admin() {
 
-    const [error, setError] = useState(false);
-
+    /* Handles iron-session login */
     async function handleSubmit(e) {
         e.preventDefault();
-
         const body = {
             username: e.currentTarget.username.value, 
             pass: e.currentTarget.password.value
         };
-
         const response = await fetch('/api/login', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(body)
         });
-
         if (response.ok) {
             return Router.push('/edit')
-        }
-
-        /*const data = await response.json();
-        
-        if (data.status === true) {
-            setError(false);
-            Router.push({pathname: '/edit', query: {access: data.status}}, '/edit');
         } else {
-            setError(true);
-        }*/
+            alert('Información No Valida.');
+        }
     }
     
     return (
@@ -61,7 +49,6 @@ export default function admin() {
                             </button>
                         </div>
                     </form>
-                    <div className={`${!error ? 'hidden' : 'block'}`}>Información Invalida</div>
                 </div>    
             </div>
         </Layout>

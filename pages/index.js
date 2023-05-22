@@ -8,8 +8,8 @@ import { IconContext } from 'react-icons';
 import { FaFacebookSquare } from 'react-icons/fa';
 import getCatalog from '@/lib/getCatalog';
 
-// TODO: Incremental Static Regeneration https://nextjs.org/docs/pages/building-your-application/rendering/incremental-static-regeneration
 // MAYBE: add model name to each image caption
+// TODO: fix 'no white space usage in brand name' issue 
 
 const tltFont = Dancing_Script({ weight: '700', subsets: ['latin'] });
 const bdyFont = MuseoModerno({ weight: '500', subsets: ['latin'] });
@@ -17,21 +17,8 @@ const bdyFont = MuseoModerno({ weight: '500', subsets: ['latin'] });
 export default function Home({ catalog }) {
 
   const [lrg, setLrg] = useState(false);
-  const renderedCatalog = Object.keys(catalog).map((key) => {
-    const items = catalog[key];
-    return (
-    <div key={`cont-${key}`} className='w-full flex flex-col'>
-      <p key={`p-${key}`} className='text-3xl italic ml-12 mt-12'>{key}</p>
-      <div key={`rect-${key}`} className='place-self-center flex justify-center items-center flex-wrap'>
-        {items.map((item) => (
-          <Image key={`img-${item}`} src={`/${key}/${item}`} width={150} height={150} alt={item} onClick={enlarge} className='cursor-zoom-in m-4' />
-        ))}
-      </div>
-      <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
-    </div>
-    );
-  });
 
+  /* makes div visible & sets img src element */
   function enlarge(e) {
     setLrg(true);
     let img = document.getElementById('largerImage'),
@@ -39,10 +26,12 @@ export default function Home({ catalog }) {
     img['src']= src;
   }
 
+  /* makes div hidden on icon click */
   function closeImg() {
     setLrg(false);
   }
 
+  /* makes div hidden on 'esc' key-Press */
   function handleKey(e) {
     let key = e.key;
     if (key === 'Escape' && lrg) {
@@ -50,12 +39,30 @@ export default function Home({ catalog }) {
     }
   }
 
+  /* makes div hidden on click outside img */
   function handleClick(e) {
     let target = e.target;
     if (!target.closest('#largerImage') && lrg) {
       setLrg(false);
     }
   }
+
+  /* the catalog of images rendered from props */
+  const renderedCatalog = Object.keys(catalog).map((key) => {
+    // TODO: parse key (replace symbol with whitespace)
+    const items = catalog[key];
+    return (
+      <div key={`cont-${key}`} className='w-full flex flex-col'>
+        <p key={`p-${key}`} className='text-3xl italic ml-12 mt-12'>{key}</p>
+        <div key={`rect-${key}`} className='place-self-center flex justify-center items-center flex-wrap'>
+          {items.map((item) => (
+            <Image key={`img-${item}`} src={`/${key}/${item}`} width={150} height={150} alt={item} onClick={enlarge} className='cursor-zoom-in m-4' />
+          ))}
+        </div>
+        <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
+      </div>
+    );
+  });
 
   return (
     <Layout title={'Pa-Ver Óptica'}>
@@ -148,9 +155,9 @@ export default function Home({ catalog }) {
   )
 }
 
+/* imports the catalog from the file system */
 export function getStaticProps() {
   const catalog = getCatalog()
-  
   return {
     props: {
       catalog,
