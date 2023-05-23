@@ -1,3 +1,4 @@
+// Project made by Tezcatlipoca0000
 import Layout from '@/components/layout';
 import Image from 'next/image';
 import { useState } from 'react';
