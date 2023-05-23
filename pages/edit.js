@@ -10,7 +10,6 @@ export default function edit({ catalog, user }) {
 
     /* Handles posting a new brand and images to the file system */
     async function postBrand(e) {
-        // TODO: parse newBrand value (replace whitespace for symbol)
         e.preventDefault();
         const files = e.target.elements.newFile.files;
         let formData = new FormData();
@@ -106,7 +105,6 @@ export default function edit({ catalog, user }) {
 
     /* The catalog of images */
     const renderedCatalog = Object.keys(catalog).map((key) => {
-        // TODO: parse key (replace symbol with whitespace)
         const items = catalog[key];
         return (
         <div key={`cont-${key}`} className='flex flex-col'>
@@ -167,7 +165,7 @@ export default function edit({ catalog, user }) {
                 <h1 className="m-8 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
                         Interfaz para la Edición del Catálogo
                 </h1>
-                {/*---FIRST SECTION*/}
+                {/*---REMOVE SECTION*/}
                 <div className="w-full">
                     <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
                     <h2 className="text-4xl font-bold dark:text-white m-4">
@@ -176,7 +174,7 @@ export default function edit({ catalog, user }) {
                     <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
                     {renderedCatalog}
                 </div>
-                {/*---SECOND SECTION*/}
+                {/*---POST SECTION*/}
                 <div className="w-full">
                     <hr className="h-px my-8 bg-black border-0 dark:bg-gray-700" />
                     <h2 className="text-4xl font-bold dark:text-white m-4">

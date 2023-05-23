@@ -9,7 +9,6 @@ import { FaFacebookSquare } from 'react-icons/fa';
 import getCatalog from '@/lib/getCatalog';
 
 // MAYBE: add model name to each image caption
-// TODO: fix 'no white space usage in brand name' issue 
 
 const tltFont = Dancing_Script({ weight: '700', subsets: ['latin'] });
 const bdyFont = MuseoModerno({ weight: '500', subsets: ['latin'] });
@@ -49,7 +48,6 @@ export default function Home({ catalog }) {
 
   /* the catalog of images rendered from props */
   const renderedCatalog = Object.keys(catalog).map((key) => {
-    // TODO: parse key (replace symbol with whitespace)
     const items = catalog[key];
     return (
       <div key={`cont-${key}`} className='w-full flex flex-col'>
